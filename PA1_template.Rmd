@@ -3,11 +3,30 @@
 
 ## Loading and preprocessing the data
 
+```{r load.and.preprocess}
+act <- read.csv("activity.csv")
+data <- act[complete.cases(act),]  # only data without missing values
+```
 
 
 ## What is mean total number of steps taken per day?
 
+First, we compute the total of steps taken in each day:
+```{r steps.in.each.day}
+steps.by.day <- aggregate(list(steps=data$steps),
+                          by = list(date=data$date), sum)
+```
 
+Whose frequencies are characterised by the following histogram
+```{r histogram, echo = FALSE}
+hist(steps.by.day$steps, xlab="Steps", main="Total steps taken per day")
+```
+
+The values of the mean and the median are:
+```{r basic.stats, echo = FALSE}
+mean(steps.by.day$steps)
+median(steps.by.day$steps)
+```
 
 ## What is the average daily activity pattern?
 
