@@ -30,6 +30,33 @@ median(steps.by.day$steps)
 
 ## What is the average daily activity pattern?
 
+First we compute the average by day and by eah interval of time:
+```{r avg.steps}
+step.avg.by.day <- aggregate(list(avg=data$steps),
+                             by=list(interval=data$interval), mean)
+head(step.avg.by.day)
+```
+
+Now we plot the average through the day time:
+
+```{r plot.avg.steps, echo = FALSE}
+plot(steps.avg.by.day$interval, steps.avg.by.day$avg, type = "l",
+     main = "Average steps through the day",
+     xlab = "Interval (5 min) in the day",
+     ylab = "Number of steps")
+max.idx <- which.max(steps.avg.by.day$avg)
+```
+
+where the maximum 5-minute interval is:
+```{r, echo=FALSE}
+steps.avg.by.day$avg[max.idx]
+
+```
+Corresponding to
+```{r, echo=FALSE}
+max.hour <- steps.avg.by.day$interval[max.idx]
+message(as.integer(max.hour/100), " hours and ", max.hour %%  100, " minutes")
+```
 
 
 ## Imputing missing values
