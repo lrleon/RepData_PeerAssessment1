@@ -7,7 +7,7 @@ First we load the data:
 
 ```{r load.and.preprocess}
 act <- read.csv("activity.csv")
-data <- act[complete.cases(act),]  # only data without missing values
+data <- na.omit(act)  
 ```
 `act` is data frame containing na's which will be treated after. `data`
 is a data frame subset of `act` whose rows do not contain the na's of
@@ -124,3 +124,40 @@ account that the filling increases the number of samples.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+In order to answer this, we first add a new column to filled data set
+(`act`):
+```{r}
+set.weekday <- function(date) {      # return if date is weekday or weekend
+    day.name <- weekdays(date)
+    if (day.name == "Saturday" | day.name == "Sunday")
+        "weekend"
+    else
+        "weekday"
+    }
+
+new.col <- as.factor(sapply(as.Date(act$date), set.weekday)) # new factor column
+act <- cbind(act, new.col)     # add new column to act data frame
+colnames(act)[4] <- "Day.Type" # rename new column
+head(act)
+```
+
+Now for that data set we compute the average number of steps taken for
+each 5-minute interval and discriminated by `Day.Type`:
+```{r}
+avg.steps.weekday <- aggregate(list(avg=act$steps),
+                               by = list(interval=act$interval,
+                                   daytype=act$Day.Type), mean)
+```
+
+Finally, we plot the averages in the time:
+
+```{r plot.day.types, echo=FALSE}
+require(lattice)
+xyplot(avg ~ interval | daytype, data = avg.steps.weekday,
+       layout=c(1,2), type="l", main="Average steps according time of day",
+       xlab = "Time of day", ylab = "Average steps taken")
+```
+
+which allows us to appreciate the patterns and their differences
+discriminates according to the day type (weekend or weekday)
