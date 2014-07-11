@@ -300,13 +300,21 @@ na entry with the mean of the given interval.</p>
 <p>First we count the rows with missing values:</p>
 
 <pre><code class="r">missing.values &lt;- is.na(act)
-message(&quot;There are &quot;, length(which(missing.rows)), &quot; row with missing values&quot;)
+num.missing &lt;- length(which(missing.rows))
+message(&quot;There are &quot;, num.missing, &quot; row with missing values&quot;)
 </code></pre>
 
 <pre><code>## There are 2304 row with missing values
 </code></pre>
 
-<p>As we see, there is a important quantity, what suggests evaluate the
+<pre><code class="r">message(&quot;representing a &quot;, round(num.missing/nrow(act)*100, 2),
+        &quot; % of all samples&quot;)
+</code></pre>
+
+<pre><code>## representing a 13.11 % of all samples
+</code></pre>
+
+<p>What could be significant and what suggests to evaluate the
 potential bias.</p>
 
 <p>Only the column &ldquo;steps&rdquo; has missing values, not the others two, as showed
@@ -324,7 +332,9 @@ by:</p>
 <pre><code>## [1] 0
 </code></pre>
 
-<p>Our strategy for filling missing values will consist in inputting the
+<h3>Strategy for inputing missing values</h3>
+
+<p>Our strategy  will consist in inputting the
 missing values with the mean for the 5-minute interval. In order to do
 that, we must first compute the means for each interval as follows:</p>
 
@@ -337,7 +347,7 @@ that, we must first compute the means for each interval as follows:</p>
 <pre><code class="r">for (i in which(missing.values)) { # for each row of act having a na entry
     interval &lt;- act$interval[i]                      # get the 5-minute interval
     index &lt;- means.for.interval$interval == interval # get its index in means
-    act$steps[i] &lt;- round(means.for.interval$avg[index]) 
+    act$steps[i] &lt;- round(means.for.interval$avg[index]) # input interval mean
     }
 </code></pre>
 

@@ -127,13 +127,23 @@ First we count the rows with missing values:
 
 ```r
 missing.values <- is.na(act)
-message("There are ", length(which(missing.rows)), " row with missing values")
+num.missing <- length(which(missing.rows))
+message("There are ", num.missing, " row with missing values")
 ```
 
 ```
 ## There are 2304 row with missing values
 ```
-As we see, there is a important quantity, what suggests evaluate the
+
+```r
+message("representing a ", round(num.missing/nrow(act)*100, 2),
+        " % of all samples")
+```
+
+```
+## representing a 13.11 % of all samples
+```
+What could be significant and what suggests to evaluate the
 potential bias.
 
 Only the column "steps" has missing values, not the others two, as showed
@@ -155,7 +165,9 @@ length(which(is.na(act$date)))
 ## [1] 0
 ```
 
-Our strategy for filling missing values will consist in inputting the
+### Strategy for inputing missing values
+
+Our strategy  will consist in inputting the
 missing values with the mean for the 5-minute interval. In order to do
 that, we must first compute the means for each interval as follows:
 
@@ -170,7 +182,7 @@ Now we input the missing values of the data frame `act`:
 for (i in which(missing.values)) { # for each row of act having a na entry
     interval <- act$interval[i]                      # get the 5-minute interval
     index <- means.for.interval$interval == interval # get its index in means
-    act$steps[i] <- round(means.for.interval$avg[index]) 
+    act$steps[i] <- round(means.for.interval$avg[index]) # input interval mean
     }
 ```
 
