@@ -36,12 +36,25 @@ head(steps.by.day)
 ```
 
 Whose distribution would be characterised by the following histogram:
+
+```r
+hist(steps.by.day$steps, xlab="Steps", main="Total steps taken per day")
+```
+
 ![plot of chunk histogram](figure/histogram.png) 
 
 The values of the mean and the median are:
 
+```r
+mean(steps.by.day$steps)
+```
+
 ```
 ## [1] 10766
+```
+
+```r
+median(steps.by.day$steps)
 ```
 
 ```
@@ -69,14 +82,35 @@ head(step.avg.by.day)
 ```
 
 Now we plot the average through of the time of a day:
+
+```r
+plot(steps.avg.by.day$interval, steps.avg.by.day$avg, type = "l",
+     main = "Average steps through the day",
+     xlab = "Interval (5 min) in the day",
+     ylab = "Number of steps")
+```
+
 ![plot of chunk plot.avg.steps](figure/plot.avg.steps.png) 
 
+```r
+max.idx <- which.max(steps.avg.by.day$avg)
+```
+
 We examine the maximum 5-minute interval is:
+
+```r
+steps.avg.by.day$avg[max.idx]
+```
 
 ```
 ## [1] 206.2
 ```
 Corresponding to
+
+```r
+max.hour <- steps.avg.by.day$interval[max.idx]
+message(as.integer(max.hour/100), " hours and ", max.hour %%  100, " minutes")
+```
 
 ```
 ## 8 hours and 35 minutes
@@ -90,6 +124,11 @@ have introduced the na's rows. In order to see that, we will fill each
 na entry with the mean of the given interval.
 
 First we count the rows with missing values:
+
+```r
+missing.values <- is.na(act)
+message("There are ", length(which(missing.rows)), " row with missing values")
+```
 
 ```
 ## There are 2304 row with missing values
@@ -145,6 +184,12 @@ new.steps.by.day <- aggregate(list(steps=act$steps),
 
 Finally, we examine the histogram for the new data set in order to
 visualize the distribution:
+
+```r
+hist(new.steps.by.day$steps, xlab="Steps",
+     main="Total steps taken per day when inputing the mean of interval")
+```
+
 ![plot of chunk new.histogram](figure/new.histogram.png) 
 
 ### What is the impact of imputing missing data on the estimates of the total daily number of steps?
@@ -195,6 +240,14 @@ avg.steps.weekday <- aggregate(list(avg=act$steps),
 ```
 
 Finally, we plot the averages in the time:
+
+
+```r
+require(lattice)
+xyplot(avg ~ interval | daytype, data = avg.steps.weekday,
+       layout=c(1,2), type="l", main="Average steps according time of day",
+       xlab = "Time of day", ylab = "Average steps taken")
+```
 
 ![plot of chunk plot.day.types](figure/plot.day.types.png) 
 
