@@ -3,10 +3,15 @@
 
 ## Loading and preprocessing the data
 
+First we load the data:
+
 ```{r load.and.preprocess}
 act <- read.csv("activity.csv")
 data <- act[complete.cases(act),]  # only data without missing values
 ```
+`act` is data frame containing na's which will be treated after. `data`
+is a data frame subset of `act` whose rows do not contain the na's of
+`act`.
 
 
 ## What is mean total number of steps taken per day?
@@ -15,9 +20,10 @@ First, we compute the total of steps taken in each day:
 ```{r steps.in.each.day}
 steps.by.day <- aggregate(list(steps=data$steps),
                           by = list(date=data$date), sum)
+head(steps.by.day)
 ```
 
-Whose frequencies are characterised by the following histogram
+Whose distribution would be characterised by the following histogram:
 ```{r histogram, echo = FALSE}
 hist(steps.by.day$steps, xlab="Steps", main="Total steps taken per day")
 ```
@@ -30,15 +36,14 @@ median(steps.by.day$steps)
 
 ## What is the average daily activity pattern?
 
-First we compute the average by day and by eah interval of time:
+First we compute the average by day and by each interval of time:
 ```{r avg.steps}
-step.avg.by.day <- aggregate(list(avg=data$steps),
-                             by=list(interval=data$interval), mean)
+steps.avg.by.day <- aggregate(list(avg=data$steps),
+                              by=list(interval=data$interval), mean)
 head(step.avg.by.day)
 ```
 
-Now we plot the average through the day time:
-
+Now we plot the average through of the time of a day:
 ```{r plot.avg.steps, echo = FALSE}
 plot(steps.avg.by.day$interval, steps.avg.by.day$avg, type = "l",
      main = "Average steps through the day",
@@ -47,10 +52,9 @@ plot(steps.avg.by.day$interval, steps.avg.by.day$avg, type = "l",
 max.idx <- which.max(steps.avg.by.day$avg)
 ```
 
-where the maximum 5-minute interval is:
+We examine the maximum 5-minute interval is:
 ```{r, echo=FALSE}
 steps.avg.by.day$avg[max.idx]
-
 ```
 Corresponding to
 ```{r, echo=FALSE}
@@ -61,6 +65,62 @@ message(as.integer(max.hour/100), " hours and ", max.hour %%  100, " minutes")
 
 ## Imputing missing values
 
+In this part we want to have an idea about the potential bias that could
+have introduced the na's rows. In order to see that, we will fill each
+na entry with the mean of the given interval.
+
+First we count the rows with missing values:
+```{r, echo=FALSE}
+missing.values <- is.na(act)
+message("There are ", length(which(missing.rows)), " row with missing values")
+```
+As we see, there is a important quantity, what suggests evaluate the
+potential bias.
+
+Only the column "steps" has missing values, not the others two, as showed
+by:
+```{r}
+length(which(is.na(act$interval)))
+length(which(is.na(act$date)))
+```
+
+Our strategy for filling missing values will consist in inputting the
+missing values with the mean for the 5-minute interval. In order to do
+that, we must first compute the means for each interval as follows:
+```{r means.for.interval}
+means.for.interval <- aggregate(list(avg=data$steps),
+                                by = list(interval=data$interval), mean)
+```
+
+Now we input the missing values of the data frame `act`:
+```{r}
+for (i in which(missing.values)) { # for each row of act having a na entry
+    interval <- act$interval[i]                      # get the 5-minute interval
+    index <- means.for.interval$interval == interval # get its index in means
+    act$steps[i] <- round(means.for.interval$avg[index]) 
+    }
+```
+
+Now we totalize the number of steps taken by day for the filled data
+frame (`act`):
+```{r new.steps.in.each.day}
+new.steps.by.day <- aggregate(list(steps=act$steps),
+                              by = list(date=act$date), sum)
+```
+
+Finally, we examine the histogram for the new data set in order to
+visualize the distribution:
+```{r new.histogram, echo = FALSE}
+hist(new.steps.by.day$steps, xlab="Steps",
+     main="Total steps taken per day when inputing the mean of interval")
+```
+
+### What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+The similarity between this data set and the previous (with the na's
+removed) suggests that practically **there is no impact** in the
+distribution. The difference for the frequency is obvious taking in
+account that the filling increases the number of samples.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
