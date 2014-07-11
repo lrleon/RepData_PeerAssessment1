@@ -264,4 +264,4 @@ xyplot(avg ~ interval | daytype, data = avg.steps.weekday,
 ![plot of chunk plot.day.types](figure/plot.day.types.png) 
 
 which allows us to appreciate the patterns and their differences
-discriminates according to the day type (weekend or weekday)
+discriminated according to the day type (weekend or weekday)
