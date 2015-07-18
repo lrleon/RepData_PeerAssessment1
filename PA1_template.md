@@ -1,3 +1,6 @@
+--- 
+output: pdf_document
+---
 # Reproducible Research: Peer Assessment 1
 
 
@@ -41,7 +44,7 @@ Whose distribution would be characterised by the following histogram:
 hist(steps.by.day$steps, xlab="Steps", main="Total steps taken per day")
 ```
 
-![plot of chunk histogram](figure/histogram.png) 
+![plot of chunk histogram](figure/histogram-1.png) 
 
 The values of the mean and the median are:
 
@@ -50,7 +53,7 @@ mean(steps.by.day$steps)
 ```
 
 ```
-## [1] 10766
+## [1] 10766.19
 ```
 
 ```r
@@ -72,7 +75,7 @@ head(step.avg.by.day)
 ```
 
 ```
-## Error: object 'step.avg.by.day' not found
+## Error in head(step.avg.by.day): object 'step.avg.by.day' not found
 ```
 
 Now we plot the average through of the time of a day:
@@ -84,7 +87,7 @@ plot(steps.avg.by.day$interval, steps.avg.by.day$avg, type = "l",
      ylab = "Number of steps")
 ```
 
-![plot of chunk plot.avg.steps](figure/plot.avg.steps.png) 
+![plot of chunk plot.avg.steps](figure/plot.avg.steps-1.png) 
 
 ```r
 max.idx <- which.max(steps.avg.by.day$avg)
@@ -97,7 +100,7 @@ steps.avg.by.day$avg[max.idx]
 ```
 
 ```
-## [1] 206.2
+## [1] 206.1698
 ```
 Corresponding to
 
@@ -125,7 +128,7 @@ num.missing <- length(which(missing.rows))
 ```
 
 ```
-## Error: object 'missing.rows' not found
+## Error in which(missing.rows): object 'missing.rows' not found
 ```
 
 ```r
@@ -133,7 +136,7 @@ message("There are ", num.missing, " row with missing values")
 ```
 
 ```
-## Error: object 'num.missing' not found
+## Error in message("There are ", num.missing, " row with missing values"): object 'num.missing' not found
 ```
 
 ```r
@@ -142,7 +145,7 @@ message("representing a ", round(num.missing/nrow(act)*100, 2),
 ```
 
 ```
-## Error: object 'num.missing' not found
+## Error in message("representing a ", round(num.missing/nrow(act) * 100, : object 'num.missing' not found
 ```
 What could be significant and what suggests to evaluate the
 potential bias.
@@ -203,7 +206,7 @@ hist(new.steps.by.day$steps, xlab="Steps",
      main="Total steps taken per day when inputing the mean of interval")
 ```
 
-![plot of chunk new.histogram](figure/new.histogram.png) 
+![plot of chunk new.histogram](figure/new.histogram-1.png) 
 
 ### What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -257,12 +260,19 @@ Finally, we plot the averages in the time:
 
 ```r
 require(lattice)
+```
+
+```
+## Loading required package: lattice
+```
+
+```r
 xyplot(avg ~ interval | daytype, data = avg.steps.weekday,
        layout=c(1,2), type="l", main="Average steps according time of day",
        xlab = "Time of day", ylab = "Average steps taken")
 ```
 
-![plot of chunk plot.day.types](figure/plot.day.types.png) 
+![plot of chunk plot.day.types](figure/plot.day.types-1.png) 
 
 which allows us to appreciate the patterns and their differences
 discriminated according to the day type (weekend or weekday)
