@@ -72,13 +72,7 @@ head(step.avg.by.day)
 ```
 
 ```
-##   interval     avg
-## 1        0 1.71698
-## 2        5 0.33962
-## 3       10 0.13208
-## 4       15 0.15094
-## 5       20 0.07547
-## 6       25 2.09434
+## Error: object 'step.avg.by.day' not found
 ```
 
 Now we plot the average through of the time of a day:
@@ -128,11 +122,18 @@ First we count the rows with missing values:
 ```r
 missing.values <- is.na(act)
 num.missing <- length(which(missing.rows))
+```
+
+```
+## Error: object 'missing.rows' not found
+```
+
+```r
 message("There are ", num.missing, " row with missing values")
 ```
 
 ```
-## There are 2304 row with missing values
+## Error: object 'num.missing' not found
 ```
 
 ```r
@@ -141,7 +142,7 @@ message("representing a ", round(num.missing/nrow(act)*100, 2),
 ```
 
 ```
-## representing a 13.11 % of all samples
+## Error: object 'num.missing' not found
 ```
 What could be significant and what suggests to evaluate the
 potential bias.
